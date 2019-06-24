@@ -4,16 +4,16 @@ In order to setup this application, clone or download this project to your compu
 
 The following dependencies are also required:
 
-requests
-json
-Joblib
-multiprocessing
-pickle
-os
-threading
-re
-Math
-Datetime
+requests,
+json,
+Joblib,
+multiprocessing,
+pickle,
+os,
+threading,
+re,
+Math,
+Datetime,
 dateutil.parser
 
 There are three ways to run this application (the first two will prompt for IP text):
