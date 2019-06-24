@@ -2,9 +2,7 @@
 
 In order to setup this application, clone or download this project to your computer or system.  Then proceed to edit the config.py file to make the directory a file you would like created to save the data to.
 
-The following dependencies are also required:
-
-requests,
+The following dependencies are also required: requests,
 json,
 Joblib,
 multiprocessing,
