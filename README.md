@@ -2,6 +2,20 @@
 
 In order to setup this application, clone or download this project to your computer or system.  Then proceed to edit the config.py file to make the directory a file you would like created to save the data to.
 
+The following dependencies are also required:
+
+requests
+json
+Joblib
+multiprocessing
+pickle
+os
+threading
+re
+Math
+Datetime
+dateutil.parser
+
 There are three ways to run this application (the first two will prompt for IP text):
 
 1) uploadNew.py
