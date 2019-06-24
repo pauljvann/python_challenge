@@ -2,6 +2,8 @@ import re
 import json
 from config import directory
 
+#identifies and pulls all IP's from text file 
+
 def getIPs(fileName):
 
     with open(fileName, 'r') as file:
