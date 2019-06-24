@@ -14,8 +14,8 @@ def getIPs(fileName):
         for ip in ips:
             ipAddresses.append(ip)
 
-    fileSave = directory + '/ipFinal.txt'
+    fileSave = directory + '/ipFinal.txt' 
     with open(fileSave, 'w') as file:
-         file.write(json.dumps(ipAddresses))
+         file.write(json.dumps(ipAddresses)) #saves and writes new text file comprised of only the identified IP addresses
 
-    return(fileSave)
+    return(fileSave) #returns filename of new text file
