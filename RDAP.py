@@ -10,13 +10,13 @@ import threading
 easyAccess = ['handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'parentHandle', 'type', 'country']
 easyAccessEntity = ['handle', 'roles']
 
-def getRDAP(ip):
+def getRDAP(ip): #pulls RDAP data from RDAP api (json format)
     rdapRequest = 'https://rdap.arin.net/registry/ip/' + ip
     rdapResponse = requests.get(rdapRequest)
     rdapData = rdapResponse.json()
     return(rdapData)
 
-def pullEntityData(start, saveTo):
+def pullEntityData(start, saveTo): #function to filter through entity data and present it to the user
     for entity in start:
         entityIndex = start.index(entity)
         entityDict = {}
@@ -67,7 +67,7 @@ def pullEntityData(start, saveTo):
         saveTo.append(entityDict)
 
 
-def parseJSON(ip):
+def parseJSON(ip): #function to go through RDAP json response and filter out all data types, adding them to array to see later
 
     ipData = getRDAP(ip)
 
@@ -75,7 +75,7 @@ def parseJSON(ip):
 
     for data in ipData:
 
-        if data == 'events':
+        if data == 'events': #formats events data
             for event in ipData['events']:
                 eventIndex = ipData['events'].index(event)
                 eventAction = ipData['events'][eventIndex]['eventAction']
@@ -85,13 +85,13 @@ def parseJSON(ip):
                 elif eventAction == 'registration':
                     ipDataFormatted['registered'] = eventDate
 
-        elif data == 'cidr0_cidrs':
+        elif data == 'cidr0_cidrs': #formats cidr0_cidrs data
             ipDataFormatted['CIDRs'] = []
             for cidr in ipData['cidr0_cidrs']:
                 cidrData =  str(cidr['v4prefix']) + '/' + str(cidr['length'])
                 ipDataFormatted['CIDRs'].append(cidrData)
 
-        elif data == 'links':
+        elif data == 'links': #formats links data
             for link in ipData['links']:
                 linkIndex = ipData['links'].index(link)
                 linkRel = ipData['links'][linkIndex]['rel']
@@ -101,7 +101,7 @@ def parseJSON(ip):
                 elif linkRel == "alternate":
                     ipDataFormatted['alternateLink'] = linkhref
 
-        elif data == 'remarks':
+        elif data == 'remarks': #formats remarks data
             for dict in ipData['remarks']:
                 for text in dict:
                     if text == "description":
@@ -109,7 +109,7 @@ def parseJSON(ip):
                         for descrip in ipData['remarks'][0]['description']:
                             ipDataFormatted['description'].append(descrip)
 
-        elif data == 'entities':
+        elif data == 'entities': #formats entity data
             ipDataFormatted['entities'] = []
             pullEntityData(ipData['entities'], ipDataFormatted['entities'])
             for entity in ipData['entities']:
@@ -125,14 +125,14 @@ def parseJSON(ip):
                                     ipDataFormatted['entities'][entityIndex]['entities'][entityIndex2]['entities'] = []
                                     pullEntityData(ipData['entities'][entityIndex]['entities'][entityIndex2]['entities'], ipDataFormatted['entities'][entityIndex]['entities'][entityIndex2]['entities'])
 
-        for tag in easyAccess:
+        for tag in easyAccess: #formats all other data
             if data == tag:
                 ipDataFormatted[tag] = ipData[data]
 
 
     return(ipDataFormatted)
 
-def processInput(ip, num):
+def processInput(ip, num): #processes ip address and pulls RDAP data
     try:
         response = parseJSON(ip)
     except:
@@ -140,7 +140,7 @@ def processInput(ip, num):
 
     return({ip : response})
 
-def getRDAPtxt(ipArray):
+def getRDAPtxt(ipArray): #takes array of IP addresses as input and pulls RDAP data
 
     ipArrays = []
 
@@ -152,12 +152,12 @@ def getRDAPtxt(ipArray):
     num_cores = multiprocessing.cpu_count()
     for array in ipArrays:
 
-        results = Parallel(n_jobs=num_cores)(delayed(processInput)(i, array.index(i)) for i in array)
+        results = Parallel(n_jobs=num_cores)(delayed(processInput)(i, array.index(i)) for i in array) #runs requests in parallel in order to pull RDAP data faster
 
-        if not os.path.exists(directory + '/RDAPfiles'):
+        if not os.path.exists(directory + '/RDAPfiles'): 
             os.makedirs(directory + '/RDAPfiles')
 
-        filename = directory + '/RDAPfiles/rdap' + str(a) + '.txt'
+        filename = directory + '/RDAPfiles/rdap' + str(a) + '.txt' #adds text files to RDAPfiles in directory outlined in config
         with open(filename, 'w') as file:
             file.write(json.dumps(results))
 
