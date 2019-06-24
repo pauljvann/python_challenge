@@ -1,0 +1,77 @@
+
+
+There are two main ways to make Queries with this tool:
+
+	- Querying for IP addresses
+	- Querying for IP Data(GEO IP, and RDAP)
+
+
+GENERAL QUERY DATA
+
+Separate ALL individual data queries in a query by an 'AND' operator
+
+
+Querying for IP Addresses:
+
+- GEO IP data:
+
+    Example: get ip where: (g)countryCode = 'US' 
+
+    Make sure query is formatted with 'get ip where: ' then in front of the geo tag, a (g)
+
+    Acceptable GEO IP tags: 'country', 'countryCode', 'lat', 'long', 'AS', 'ISP', 'org', 'region', 'regionName', 'status', 'timezone', 'status'
+
+
+
+- RDAP data:
+
+    Example: get ip where: (r)handle = 'US' 
+
+    Make sure query is formatted with 'get ip where: ' then in front of the rdap tag, a (r)
+
+    Acceptable RDAP IP tags: 'handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'description', 'lastChanged', 'registered', 'selfLink', 'alternateLink', 'entities', 'CIDRs'
+
+
+- Distance data:
+
+    Example: get ip where: (d)[27.2:-97.0:150]
+    Format: get ip where: (d)[lat:long:mile]
+
+    Make sure query is formatted with 'get ip where: ' then in front of the distance data, a (d)
+
+    This query essentially takes a latitude as the first piece of data, a longitude as the second, and a mile count as the third.  It will identify all IP addresses within that mileage of that coordinate point.
+
+
+- Time/Date data:
+
+    Example: get ip where: (t)[RA/2008-09-15T15:53:00Z]
+    Format: get ip where: (t)[type/ISO 8601 time]
+
+    Make sure query is formatted with 'get ip where: ' then in front of the time data, a (t)
+
+    This query essentially will identify all ip addresses registered before, registered after, changed before, or changed after the identified date.  For example, the query above identifies all IP addresses registered after September 15, 2008 at 15:53:00.
+
+    Accepted types = 'RA'(registered after), 'RB'(registered before), 'CA'(changed after), 'CB' (changed before)
+
+
+Querying for IP Data:
+
+
+- GEO IP data:
+
+    Example: GET (g)countryCode WHERE ip=[45.169.69.219, 152.250.216.187, 200.53.193.130]
+
+    Make sure query is formatted with 'GET' and 'WHERE' then in front of the geo tag, a (g)
+
+    Acceptable GEO IP tags: 'country', 'countryCode', 'lat', 'long', 'AS', 'ISP', 'org', 'region', 'regionName', 'status', 'timezone', 'status'
+
+
+- RDAP IP data:
+
+    Example: GET (r)handle AND (r)name AND (r)endAddress WHERE ip=[45.169.69.219, 152.250.216.187, 200.53.193.130]
+
+    Make sure query is formatted with 'GET' and 'WHERE' then in front of the geo tag, a (g)
+
+    Acceptable RDAP IP tags: 'handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'description', 'registered', 'lastChanged', 'selfLink', 'alternateLink', 'entities', 'CIDRs'
+
+
