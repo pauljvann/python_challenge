@@ -7,7 +7,7 @@ import re
 from config import directory
 
 
-def haversine(lon1, lat1, lon2, lat2):
+def haversine(lon1, lat1, lon2, lat2): #function to get distance in miles between two coordinate points
 
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
     dlon = lon2 - lon1
@@ -19,7 +19,7 @@ def haversine(lon1, lat1, lon2, lat2):
 
 
 
-def getGeoIpData():
+def getGeoIpData(): #pulls GEO IP data from directory outlined in config file
 
     geoIPData = {}
 
@@ -37,7 +37,7 @@ geoIPData = getGeoIpData()
 
 
 
-def getRdapData():
+def getRdapData(): #pulls RDAP IP data from directory outlined in config file
 
     rdapData = {}
 
@@ -72,7 +72,7 @@ rdapData = getRdapData()
 rdapTags = []
 geoTags = []
 
-def getQuery(query):
+def getQuery(query): #takes query as input and formats/changes it to get useful data from it
 
     queryComp = []
 
@@ -90,7 +90,7 @@ def getQuery(query):
         elif res[0:3] == '(r)':
             type='rdap'
 
-        if res[0:3] == '(g)' or res[0:3] == '(r)':
+        if res[0:3] == '(g)' or res[0:3] == '(r)': #performs mutations on text if GEO or RDAP query
 
             updatedString =  res[3:len(res)]
             stringArray = updatedString.split('=')
@@ -99,7 +99,7 @@ def getQuery(query):
 
             queryComp.append({'type' : type, 'tag' : tag, 'value' : value})
 
-        elif res[0:3] == '(d)':
+        elif res[0:3] == '(d)': #performs mutations on text if Distance between query
 
             type = 'distance'
             updatedString = res[3:len(res)]
@@ -113,7 +113,7 @@ def getQuery(query):
 
             queryComp.append({'type' : type, 'lat' : latInput, 'long' : longInput, 'mile' : mile})
 
-        elif res[0:3] == '(t)':
+        elif res[0:3] == '(t)': #performs mutations on text if time query
 
             type='time'
             updatedString = res[3:len(res)]
@@ -131,7 +131,7 @@ def getQuery(query):
     for query in queryComp:
         queryIndex = queryComp.index(query)
         willUpdate = 0
-        if query['type'] == 'geo':
+        if query['type'] == 'geo': #performs GEO queries
             resultsUpdated = []
             for ip in geoIPData:
                 try:
@@ -154,7 +154,7 @@ def getQuery(query):
             if willUpdate == 1:
                 results = resultsUpdated
 
-        elif query['type'] == 'rdap':
+        elif query['type'] == 'rdap': #performs RDAP queries
             resultsUpdated = []
             for ip in rdapData:
                 try:
@@ -177,12 +177,12 @@ def getQuery(query):
             if willUpdate == 1:
                 results = resultsUpdated
 
-        elif query['type'] == 'distance':
+        elif query['type'] == 'distance': #performs distance queries
             resultsUpdated = []
             for ip in geoIPData:
                 try:
 
-                    distance = haversine(float(query['long']), float(query['lat']), float(geoIPData[ip]['long']), float(geoIPData[ip]['lat']))
+                    distance = haversine(float(query['long']), float(query['lat']), float(geoIPData[ip]['long']), float(geoIPData[ip]['lat'])) #uses function at top of program to get distance between
 
                     if distance <= int(query['mile']):
                         if queryIndex == 0:
@@ -202,7 +202,7 @@ def getQuery(query):
             if willUpdate == 1:
                 results = resultsUpdated
 
-        elif query['type'] == 'time':
+        elif query['type'] == 'time': #gets time difference between datetimes
 
             resultsUpdated = []
 
@@ -314,10 +314,10 @@ def getQuery(query):
 
     return(results)
 
-def queryValidator(query):
+def queryValidator(query): #validates query to make sure that it is the correct format
 
-    geoTags = ['country', 'countryCode', 'lat', 'long', 'AS', 'ISP', 'org', 'region', 'regionName', 'status', 'timezone', 'status']
-    rdapTags = ['handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'description', 'lastChanged', 'selfLink', 'alternateLink', 'entities', 'CIDRs']
+    geoTags = ['country', 'countryCode', 'lat', 'long', 'AS', 'ISP', 'org', 'region', 'regionName', 'status', 'timezone', 'status'] #acceptable GEO tags
+    rdapTags = ['handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'description', 'lastChanged', 'registered', 'selfLink', 'alternateLink', 'entities', 'CIDRs'] #acceptable RDAP tags
 
     queryComp = []
     if 'get ip where' in query:
@@ -394,13 +394,13 @@ def queryData(query):
         results = {'ip' : ip}
         for q in queryComp:
             for type in q:
-                if type == 'geo':
+                if type == 'geo': #performs geo data query
                     try:
                         data = geoIPData[ip][q[type]]
                     except:
                         data = 'data does not exist in Database'
 
-                elif type == 'rdap':
+                elif type == 'rdap': #performs rdap data query
                     try:
                         data = rdapData[ip][q[type]]
                     except:
@@ -416,11 +416,11 @@ def queryData(query):
 
 
 
-def queryDataValidator(query):
+def queryDataValidator(query): #validates to make sure data query is correct format
 
     geoTags = ['country', 'countryCode', 'lat', 'long', 'AS', 'ISP', 'org', 'region', 'regionName', 'status', 'timezone', 'status']
-    rdapTags = ['handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'description', 'lastChanged', 'selfLink', 'alternateLink', 'entities', 'CIDRs']
-
+    rdapTags = ['handle', 'startAddress', 'endAddress', 'ipVersion', 'name', 'description', 'lastChanged', 'registered', 'selfLink', 'alternateLink', 'entities', 'CIDRs']
+    
     if "GET" in query:
         query = query.replace('GET', '')
         query = query.replace(' ', '')
