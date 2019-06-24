@@ -2,6 +2,8 @@
 
 In order to setup this application, clone or download this project to your computer or system.  Then proceed to edit the config.py file to make the directory a file you would like created to save the data to.
 
+IMPORTANT: This application is written and runs in Python3 
+
 The following dependencies are also required: Requests,
 json,
 joblib,
